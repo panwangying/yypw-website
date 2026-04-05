@@ -1,8 +1,9 @@
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const links = [
   { label: "Home",     href: "/" },
@@ -23,10 +24,9 @@ function SmokeY() {
     const W = canvas.width;
     const H = canvas.height;
     const cx = W / 2;
-
-    const yTop = 120;
-    const yMid = 140;
-    const yBot = 180;
+    const yTop = 118;
+    const yMid = 136;
+    const yBot = 150;
 
     type Particle = {
       x: number; y: number;
@@ -129,35 +129,97 @@ function SmokeY() {
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // 打开菜单时禁止页面滚动
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [menuOpen]);
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-12 border-b border-[#E4E3DF] bg-[rgba(249,248,246,0.88)] backdrop-blur-md"
-      style={{ overflow: "visible" }}
-    >
-      <Link href="/" style={{ display: "flex", alignItems: "center" }}>
-        <SmokeY />
-      </Link>
+    <>
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-between px-6 md:px-12 border-b border-[#E4E3DF] bg-[rgba(249,248,246,0.88)] backdrop-blur-md"
+        style={{ overflow: "visible" }}
+      >
+        {/* Logo */}
+        <Link href="/" style={{ display: "flex", alignItems: "center" }} onClick={() => setMenuOpen(false)}>
+          <SmokeY />
+        </Link>
 
-      <ul className="flex gap-9 list-none">
-        {links.map(({ label, href }) => {
-          const isActive = pathname === href;
-          return (
-            <li key={href}>
+        {/* 桌面端导航链接 */}
+        <ul className="hidden md:flex gap-9 list-none">
+          {links.map(({ label, href }) => {
+            const isActive = pathname === href;
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={`text-[13px] uppercase tracking-widest transition-colors duration-200 ${
+                    isActive ? "text-[#111110]" : "text-[#8A8984] hover:text-[#111110]"
+                  }`}
+                >
+                  {label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* 手机端汉堡按钮 */}
+        <button
+          className="md:hidden flex flex-col gap-[5px] p-2"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span
+            className="block w-5 h-[1.5px] bg-[#111110] transition-all duration-300 origin-center"
+            style={{
+              transform: menuOpen ? "translateY(6.5px) rotate(45deg)" : "none",
+            }}
+          />
+          <span
+            className="block w-5 h-[1.5px] bg-[#111110] transition-all duration-300"
+            style={{ opacity: menuOpen ? 0 : 1 }}
+          />
+          <span
+            className="block w-5 h-[1.5px] bg-[#111110] transition-all duration-300 origin-center"
+            style={{
+              transform: menuOpen ? "translateY(-6.5px) rotate(-45deg)" : "none",
+            }}
+          />
+        </button>
+      </nav>
+
+      {/* 手机端全屏菜单 */}
+      <div
+        className={`fixed inset-0 z-40 bg-[#F9F8F6] flex flex-col justify-center px-8 transition-all duration-400 md:hidden ${
+          menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <ul className="flex flex-col gap-8 list-none">
+          {links.map(({ label, href }, i) => (
+            <li
+              key={href}
+              style={{
+                transform: menuOpen ? "translateY(0)" : "translateY(16px)",
+                opacity: menuOpen ? 1 : 0,
+                transition: `all 0.35s ease ${i * 0.07}s`,
+              }}
+            >
               <Link
                 href={href}
-                className={`text-[13px] uppercase tracking-widest transition-colors duration-200 ${
-                  isActive
-                    ? "text-[#111110]"
-                    : "text-[#8A8984] hover:text-[#111110]"
-                }`}
+                onClick={() => setMenuOpen(false)}
+                className="text-[32px] font-light tracking-[-0.02em] text-[#111110] hover:text-[#8A8984] transition-colors duration-200"
+                style={{ fontFamily: "'DM Serif Display', serif" }}
               >
                 {label}
               </Link>
             </li>
-          );
-        })}
-      </ul>
-    </nav>
+          ))}
+        </ul>
+      </div>
+    </>
   );
 }
