@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, DM_Serif_Display } from "next/font/google";
-import Navbar from "@/components/Navbar";
+import ClientLayout from "@/components/ClientLayout";
 import "./globals.css";
-
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -17,21 +16,16 @@ const dmSerif = DM_Serif_Display({
   variable: "--font-serif",
 });
 
-
 export const metadata: Metadata = {
-    title: {
-      default: "Y",           
-      template: "%s — ypw",   
-    },
-    description: "ypw personal website",
-  };
+  title: { default: "Y", template: "%s — ypw" },
+  description: "ypw personal website",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${dmSerif.variable}`}>
+    <html lang="zh" className={`${dmSans.variable} ${dmSerif.variable}`}>
       <body>
-        <Navbar />
-        {children}
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

@@ -9,7 +9,7 @@ const lines = [
 
 export default function ProseSection() {
   return (
-    <section className="px-6 md:px-12 pb-24 md:pb-32">
+    <section className="px-6 md:px-12 pb-24 md:pb-32 pt-8">
       <div className="max-w-xl space-y-16 md:space-y-24">
         {lines.map((item, i) => (
           <div key={item.id}>

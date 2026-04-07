@@ -1,12 +1,5 @@
-import HeroSection from "@/components/HeroSection";
-import ProseSection from "@/components/ProseSection";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <main>
-      <HeroSection />
-      <ProseSection />
-
-    </main>
-  );
+export default function RootPage() {
+  redirect("/intro");
 }
